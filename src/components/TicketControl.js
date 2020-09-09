@@ -16,7 +16,7 @@ class TicketControl extends React.Component {
     this.setState(prevState => ({
       formVisibleOnPage: false, 
       masterTicketList: []
-    }));                                 //if you can see the form, you can see the button
+    }));                           //if you can see the form, you can see the button
   }
 
   handleAddingNewTicketToList = (newTicket) => { // beginning the passing of prop from child to parent, this argument comes from ticket form .js with all the new ticket properties (the one called onNewTicketCreation)
@@ -47,3 +47,8 @@ class TicketControl extends React.Component {
 }
 
 export default TicketControl;
+
+// state is fluid and everchanging, props never change and component cannot change its props
+// Ticket control has local state with the toggling between master list being displayed or the form being displayed
+// ticket list doesnt care when its being displayed and neither does ticket form, but the 
+// shared state is that both those components need access to manipulate the master list
