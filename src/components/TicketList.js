@@ -3,11 +3,11 @@ import Ticket from "./Ticket";
 import PropTypes from "prop-types";
 
 
-function TicketList(props){
+function TicketList(props){       // in this case, props = masterTicketList(from TicketControl.js) which is: [{ticket}, {ticket}, {ticket}] an array of individual ticket objects
   return (
     <React.Fragment>
       <hr/>
-      {props.ticketList.map((ticket, index) =>
+      {props.ticketList.map((ticket, index) => // maps each ticket and assigns their values to be displayed as a list
         <Ticket names={ticket.names}
           location={ticket.location}
           issue={ticket.issue}

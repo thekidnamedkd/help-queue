@@ -8,18 +8,20 @@ class TicketControl extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      formVisibleOnPage: false
+      formVisibleOnPage: false,   // by default: newTicketForm = hidden, TicketList = show
+      masterTicketList: [] // instantiate empty array to be populated with ticket objects                           
     };
   }
 
   handleClick = () => {
     this.setState(prevState => ({
-      formVisibleOnPage: false, 
-      masterTicketList: []
+      formVisibleOnPage: !prevState.formVisibleOnPage, // prevState is actually current state so this just changes from false to true depending on what current state the page is on
     }));                           //if you can see the form, you can see the button
   }
 
-  handleAddingNewTicketToList = (newTicket) => { // beginning the passing of prop from child to parent, this argument comes from ticket form .js with all the new ticket properties (the one called onNewTicketCreation)
+
+  // funtion below adds new ticket entries to the master list of tickets, but it needs access to the form so it is passed to NewTicketForm in the render
+  handleAddingNewTicketToList = (newTicket) => { // Method for adding new ticket to master list, the parameter "newTicket" comes from ticketForm.js with all the new ticket properties (form data). This method will be saved as the onNewTicketCreation property on NewTicketForm.
     const newMasterTicketList = this.state.masterTicketList.concat(newTicket); // returns brand new array and adds new ticket element saves it in new master ticket list
     this.setState({
       masterTicketList: newMasterTicketList, //then we are setting set current state to mastertickelist, this is just like the stuff we did in week one with the plant factory!
@@ -33,13 +35,13 @@ class TicketControl extends React.Component {
       currentlyVisibleState = <NewTicketForm onNewTicketCreation={this.handleAddingNewTicketToList} /> // this is where we pass child to parent, on is often used for props and this is passed into NewTickeForm (other file)
       buttonText = "Return to Ticket List"; // and show return to ticket list text on button
     } else {                                    // otherwise
-      currentlyVisibleState = <TicketList ticketList={this.state.masterTicketList} />; // show the list of tickets
+      currentlyVisibleState = <TicketList ticketList={this.state.masterTicketList} />; // pass masterlist to the ticketlist component and also show the ticket list
       buttonText = "Add Ticket"; // and show this add ticket button
     }
     return (
       <React.Fragment>
-        {currentlyVisibleState} 
-        <button onClick={this.handleClick}>{buttonText}</button>
+        {currentlyVisibleState}
+        <button onClick={this.handleClick}>{buttonText}</button> 
       </React.Fragment> //return whichever state is visible and the button with whichever text is visibleState
     );
   }

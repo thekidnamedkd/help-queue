@@ -3,11 +3,13 @@ import { v4 } from 'uuid';
 import PropTypes from "prop-types";
 
 
-function NewTicketForm(props){
+function NewTicketForm(props){ // function created, defined below as version that is passed into ticket control render
 
-  function handleNewTicketFormSubmission(event) {
+  function handleNewTicketFormSubmission(event) { //gathers input from user
     event.preventDefault();
-    props.onNewTicketCreation({names: event.target.names.value, location: event.target.location.value, issue: event.target.issue.value, id: v4()});
+    props.onNewTicketCreation({names: event.target.names.value, location: event.target.location.value, issue: event.target.issue.value, id: v4()}); // v4 is the UUID that assigns an id to each ticket object
+    // onNewTicketCreation is the callback that allows the parent to access the inputs from the form. And pass it to the the 
+    // handleAddingNewTicketToList to be added to the masterlist 
   }
 
   return (
@@ -31,7 +33,7 @@ function NewTicketForm(props){
 }
 
 NewTicketForm.propTypes = {
-  onNewTicketCreation: PropTypes.func
+  onNewTicketCreation: PropTypes.func // passed into the conditional rendering in ticketcontrol
 };
 
 export default NewTicketForm;
