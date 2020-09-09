@@ -9,7 +9,8 @@ class TicketControl extends React.Component {
     super(props);
     this.state = {
       formVisibleOnPage: false,   // by default: newTicketForm = hidden, TicketList = show
-      masterTicketList: [] // instantiate empty array to be populated with ticket objects                           
+      masterTicketList: [], // instantiate empty array to be populated with ticket objects 
+      selectedTicket: null                          
     };
   }
 
