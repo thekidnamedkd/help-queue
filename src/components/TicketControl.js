@@ -7,7 +7,7 @@ class TicketControl extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = { // this is the base state to be updated as we go
       formVisibleOnPage: false,   // by default: newTicketForm = hidden, TicketList = show
       masterTicketList: [], // instantiate empty array to be populated with ticket objects 
       selectedTicket: null                          
@@ -15,11 +15,22 @@ class TicketControl extends React.Component {
   }
 
   handleClick = () => {
-    this.setState(prevState => ({
-      formVisibleOnPage: !prevState.formVisibleOnPage, // prevState is actually current state so this just changes from false to true depending on what current state the page is on
-    }));                           //if you can see the form, you can see the button
-  }
+    if (this.state.selectedTicket != null) {  //if starting on ticket details, the following should happen when button is clicked
+      this.setState({
+        formVisibleOnPage: false,
+        selectedTicket: null
+      });
+    } else {
+      this.setState(prevState => ({
+        formVisibleOnPage: !prevState.formVisibleOnPage,   // prevState is actually current state so this just changes from false to true depending on what current state the page is on
+      }));
+    }
+  }                          
 
+  handleChangingSelectedTicket = (id) => {
+    const selectedTicket = this.state.masterTicketList.filter(ticket => ticket.id === id)[0]; // zeroith index because the filter results in an array of one ticket, so we are grabbing the only ticket and getting rid of array
+    this.setState({selectedTicket: selectedTicket}); // selected ticket is not the ticket we have filtered out
+  }
 
   // funtion below adds new ticket entries to the master list of tickets, but it needs access to the form so it is passed to NewTicketForm in the render
   handleAddingNewTicketToList = (newTicket) => { // Method for adding new ticket to master list, the parameter "newTicket" comes from ticketForm.js with all the new ticket properties (form data). This method will be saved as the onNewTicketCreation property on NewTicketForm.
@@ -29,14 +40,28 @@ class TicketControl extends React.Component {
       formVisibleOnPage: false });
   }
 
+  handleDeletingTicket = (id) => {
+    const newMasterTicketList = this.state.masterTicketList.filter(ticket => ticket.id !== id);
+    this.setState({
+      masterTicketList: newMasterTicketList,
+      selectedTicket: null
+    });
+  }
+  
+
   render(){
     let currentlyVisibleState = null; // create a null variable that can be used in conditional to determine which state is visible
     let buttonText = null; // create null button variable that can be used fo conditional
-    if (this.state.formVisibleOnPage) { // if the form is visible
+
+    if(this.state.selectedTicket != null){
+      currentlyVisibleState = <TicketDetail ticket = {this.state.selectedTicket} onClickingDelete = {this.handleDeletingTicket}/>
+      buttonText = "Return to Ticket List";
+    } 
+    else if (this.state.formVisibleOnPage) { // if the form is visible
       currentlyVisibleState = <NewTicketForm onNewTicketCreation={this.handleAddingNewTicketToList} /> // this is where we pass child to parent, on is often used for props and this is passed into NewTickeForm (other file)
       buttonText = "Return to Ticket List"; // and show return to ticket list text on button
     } else {                                    // otherwise
-      currentlyVisibleState = <TicketList ticketList={this.state.masterTicketList} />; // pass masterlist to the ticketlist component and also show the ticket list
+      currentlyVisibleState = <TicketList ticketList={this.state.masterTicketList} onTicketSelection={this.handleChangingSelectedTicket} />; // pass masterlist to the ticketlist component and also show the ticket list
       buttonText = "Add Ticket"; // and show this add ticket button
     }
     return (
