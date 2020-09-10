@@ -22,7 +22,8 @@ class TicketControl extends React.Component {
     if (this.state.selectedTicket != null) {  //if starting on ticket details, the following should happen when button is clicked
       this.setState({
         formVisibleOnPage: false,
-        selectedTicket: null
+        selectedTicket: null,
+        editing: false
       });
     } else {
       this.setState(prevState => ({
