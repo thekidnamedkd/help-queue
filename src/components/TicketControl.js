@@ -3,6 +3,8 @@ import React from 'react';
 import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
 import TicketDetail from './TicketDetail';
+import EditTicketForm from './EditTicketForm';
+
 
 class TicketControl extends React.Component {
 
@@ -39,6 +41,17 @@ class TicketControl extends React.Component {
     this.setState({selectedTicket: selectedTicket}); // selected ticket is not the ticket we have filtered out
   }
 
+  handleEditingTicketInList = (ticketToEdit) => {                       // [{ticket1}, {ticket2}, {ticket3}]    {ticketToEdit} = NEW ticket3
+    const editedMasterTicketList = this.state.masterTicketList          // [{ticket1}, {ticket2}, {ticket3}]        //previous master list
+      .filter(ticket => ticket.id !== this.state.selectedTicket.id)     // [{ticket1}, {ticket2}]                   //previous master list - ticket selected by id. uses filter method to include every ticket that does not match the selected id and makes that a new master list
+      .concat(ticketToEdit);                                            //[{ticket1}, {ticket2}, {ticketToEdit}]    //add updated ticket state to the master list
+    this.setState({
+        masterTicketList: editedMasterTicketList,
+        editing: false,
+        selectedTicket: null
+      });
+  }
+
   // funtion below adds new ticket entries to the master list of tickets, but it needs access to the form so it is passed to NewTicketForm in the render
   handleAddingNewTicketToList = (newTicket) => { // Method for adding new ticket to master list, the parameter "newTicket" comes from ticketForm.js with all the new ticket properties (form data). This method will be saved as the onNewTicketCreation property on NewTicketForm.
     const newMasterTicketList = this.state.masterTicketList.concat(newTicket); // returns brand new array and adds new ticket element saves it in new master ticket list
@@ -60,7 +73,10 @@ class TicketControl extends React.Component {
     let currentlyVisibleState = null; // create a null variable that can be used in conditional to determine which state is visible
     let buttonText = null; // create null button variable that can be used fo conditional
 
-    if(this.state.selectedTicket != null){
+    if (this.state.editing ) {      
+      currentlyVisibleState = <EditTicketForm ticket = {this.state.selectedTicket} onEditTicket = {this.handleEditingTicketInList} />
+      buttonText = "Return to Ticket List";
+    } else if (this.state.selectedTicket != null) {
       currentlyVisibleState = <TicketDetail ticket = {this.state.selectedTicket} onClickingDelete = {this.handleDeletingTicket} onClickingEdit = {this.handleEditClick}/>
       buttonText = "Return to Ticket List";
     } 
