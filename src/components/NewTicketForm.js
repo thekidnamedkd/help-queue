@@ -14,20 +14,10 @@ function NewTicketForm(props){ // function created, defined below as version tha
 
   return (
     <React.Fragment>
-      <form onSubmit={handleNewTicketFormSubmission}>
-        <input
-          type='text'
-          name='names'
-          placeholder='Pair Names' />
-        <input
-          type='text'
-          name='location'
-          placeholder='Location' />
-        <textarea
-          name='issue'
-          placeholder='Describe your issue.' />
-        <button type='submit'>Help!</button>
-      </form>
+      <ReusableForm
+      formSubmissionHandler={handleNewTicketFormSubmission}
+      buttonText="Help!"
+      />
     </React.Fragment>
   );
 }

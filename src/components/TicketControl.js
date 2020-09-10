@@ -2,6 +2,7 @@
 import React from 'react';
 import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
+import TicketDetail from './TicketDetail';
 
 class TicketControl extends React.Component {
 
@@ -10,7 +11,8 @@ class TicketControl extends React.Component {
     this.state = { // this is the base state to be updated as we go
       formVisibleOnPage: false,   // by default: newTicketForm = hidden, TicketList = show
       masterTicketList: [], // instantiate empty array to be populated with ticket objects 
-      selectedTicket: null                          
+      selectedTicket: null,
+      editing: false                          
     };
   }
 
@@ -25,7 +27,12 @@ class TicketControl extends React.Component {
         formVisibleOnPage: !prevState.formVisibleOnPage,   // prevState is actually current state so this just changes from false to true depending on what current state the page is on
       }));
     }
-  }                          
+  } 
+  
+  handleEditClick = () => {
+    console.log("handleEditClick reached!");
+    this.setState({editing: true});
+  }
 
   handleChangingSelectedTicket = (id) => {
     const selectedTicket = this.state.masterTicketList.filter(ticket => ticket.id === id)[0]; // zeroith index because the filter results in an array of one ticket, so we are grabbing the only ticket and getting rid of array
@@ -54,7 +61,7 @@ class TicketControl extends React.Component {
     let buttonText = null; // create null button variable that can be used fo conditional
 
     if(this.state.selectedTicket != null){
-      currentlyVisibleState = <TicketDetail ticket = {this.state.selectedTicket} onClickingDelete = {this.handleDeletingTicket}/>
+      currentlyVisibleState = <TicketDetail ticket = {this.state.selectedTicket} onClickingDelete = {this.handleDeletingTicket} onClickingEdit = {this.handleEditClick}/>
       buttonText = "Return to Ticket List";
     } 
     else if (this.state.formVisibleOnPage) { // if the form is visible

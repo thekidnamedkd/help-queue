@@ -7,7 +7,7 @@ function TicketList(props){       // in this case, props = masterTicketList(from
   return (
     <React.Fragment>
       <hr/>
-      {props.ticketList.map((ticket) => // maps each ticket and assigns their values to be displayed as a list
+      {props.ticketList.map((ticket) => // maps each ticket and assigns their input values to be displayed as a list
         <Ticket 
           whenTicketClicked = {props.onTicketSelection}
           names={ticket.names}
