@@ -4,7 +4,9 @@ import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
 import TicketDetail from './TicketDetail';
 import EditTicketForm from './EditTicketForm';
+import PropTypes from "prop=types";
 import { connect } from 'react-redux';
+import Ticket from './Ticket';
 
 
 class TicketControl extends React.Component {
@@ -39,9 +41,14 @@ class TicketControl extends React.Component {
   }
 
   handleChangingSelectedTicket = (id) => {
-    const selectedTicket = this.state.masterTicketList.filter(ticket => ticket.id === id)[0]; // zeroith index because the filter results in an array of one ticket, so we are grabbing the only ticket and getting rid of array
-    this.setState({selectedTicket: selectedTicket}); // selected ticket is not the ticket we have filtered out
+    const selectedTicket = this.props.masterTicketList[id];
+    this.setState({selectedTicket: selectedTicket});
   }
+
+  // handleChangingSelectedTicket = (id) => {
+  //   const selectedTicket = this.state.masterTicketList.filter(ticket => ticket.id === id)[0]; // zeroith index because the filter results in an array of one ticket, so we are grabbing the only ticket and getting rid of array
+  //   this.setState({selectedTicket: selectedTicket}); // selected ticket is not the ticket we have filtered out
+  // }
 
   handleEditingTicketInList = (ticketToEdit) => {
     const { dispatch } = this.props;
@@ -126,9 +133,10 @@ class TicketControl extends React.Component {
     else if (this.state.formVisibleOnPage) { // if the form is visible
       currentlyVisibleState = <NewTicketForm onNewTicketCreation={this.handleAddingNewTicketToList} /> // this is where we pass child to parent, on is often used for props and this is passed into NewTickeForm (other file)
       buttonText = "Return to Ticket List"; // and show return to ticket list text on button
-    } else {                                    // otherwise
-      currentlyVisibleState = <TicketList ticketList={this.state.masterTicketList} onTicketSelection={this.handleChangingSelectedTicket} />; // pass masterlist to the ticketlist component and also show the ticket list
-      buttonText = "Add Ticket"; // and show this add ticket button
+    } else {    
+      currentlyVisibleState = <TicketList ticketList={this.props.masterTicketList} onTicketSelection={this.handleChangingSelectedTicket} />;                                // otherwise
+      // currentlyVisibleState = <TicketList ticketList={this.state.masterTicketList} onTicketSelection={this.handleChangingSelectedTicket} />; // pass masterlist to the ticketlist component and also show the ticket list
+      // buttonText = "Add Ticket"; // and show this add ticket button
     }
     return (
       <React.Fragment>
@@ -140,7 +148,17 @@ class TicketControl extends React.Component {
 
 }
 
-TicketControl = connect()(TicketControl);
+TicketControl.propTypes = {
+  masterTicketList: PropTypes.object
+};
+
+const mapStateProps = state => {
+  return {
+    masterTicketList: state
+  }
+}
+
+TicketControl = connect(mapStateProps)(TicketControl);
 
 
 export default TicketControl;
