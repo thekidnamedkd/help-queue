@@ -11,10 +11,10 @@ export default (state = {}, action) => {
         id: id
       }
     });
-//   case 'DELETE_TICKET': // else if the case is delete ticket then do this...
-//     const newState = { ...state };
-//     delete newState[id];
-//     return newState;
+  case 'DELETE_TICKET': // else if the case is delete ticket then do this...
+    const newState = { ...state };
+    delete newState[id];
+    return newState;
   default:
     return state;
   }

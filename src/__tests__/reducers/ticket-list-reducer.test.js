@@ -4,16 +4,16 @@ describe('ticketListReducer', () => {
 
   let action;
 
-//   const currentState = {
-//     1: {names: 'Ryan & Aimen',
-//     location: '4b',
-//     issue: 'Redux action is not working correctly.',
-//     id: 1 },
-//     2: {names: 'Jasmine and Justine',
-//     location: '2a',
-//     issue: 'Reducer has side effects.',
-//     id: 2 }
-//   }
+  const currentState = {
+    1: {names: 'Ryan & Aimen',
+    location: '4b',
+    issue: 'Redux action is not working correctly.',
+    id: 1 },
+    2: {names: 'Jasmine and Justine',
+    location: '2a',
+    issue: 'Reducer has side effects.',
+    id: 2 }
+  }
 
   const ticketData = {
     names: 'Ryan & Aimen',
@@ -35,7 +35,7 @@ describe('ticketListReducer', () => {
       issue: issue,
       id: id
     };
-    
+
     expect(ticketListReducer({}, action)).toEqual({
       [id] : {
         names: names,
@@ -46,17 +46,48 @@ describe('ticketListReducer', () => {
     });
   });
 
-//   test('Should successfully delete a ticket', () => {
-//     action = {
-//       type: 'DELETE_TICKET',
-//       id: 1
-//     };
-//     expect(ticketListReducer(currentState, action)).toEqual({
-//       2: {names: 'Jasmine and Justine',
-//         location: '2a',
-//         issue: 'Reducer has side effects.',
-//         id: 2 }
-//     });
-//   });
+  test('Should successfully delete a ticket', () => {
+    action = {
+      type: 'DELETE_TICKET',
+      id: 1
+    };
+    expect(ticketListReducer(currentState, action)).toEqual({
+      2: {names: 'Jasmine and Justine',
+        location: '2a',
+        issue: 'Reducer has side effects.',
+        id: 2 }
+    });
+  });
+
+
+  // add update functionality that uses add ticket functionality plus allows it to edit ticket information and then add the ticket
+  test('Should successfully update a ticket', () => {
+    const { names, location, issue, id } = ticketData;
+    action = {
+      type: 'ADD_TICKET',
+      names: names,
+      location: location,
+      issue: issue,
+      id: id
+    }
+
+    // had to define new variables to input into expect statement below
+    const stateToUpdate = ticketListReducer({}, action);
+    const updateAction =  {
+      type: 'ADD_TICKET',
+      names: "Steve & John",
+      location: location,
+      issue: issue,
+      id: id
+    }
+    expect(ticketListReducer(stateToUpdate, updateAction)).toEqual({
+      [id] : {
+        names: "Steve & John",
+        location: location,
+        issue: issue,
+        id: id
+      }
+    });
+  });
 
 });
