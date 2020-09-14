@@ -4,6 +4,7 @@ import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
 import TicketDetail from './TicketDetail';
 import EditTicketForm from './EditTicketForm';
+import { connect } from 'react-redux';
 
 
 class TicketControl extends React.Component {
@@ -12,7 +13,7 @@ class TicketControl extends React.Component {
     super(props);
     this.state = { // this is the base state to be updated as we go
       formVisibleOnPage: false,   // by default: newTicketForm = hidden, TicketList = show
-      masterTicketList: [], // instantiate empty array to be populated with ticket objects 
+      // masterTicketList: [], // instantiate empty array to be populated with ticket objects 
       selectedTicket: null,
       editing: false                          
     };
@@ -42,32 +43,73 @@ class TicketControl extends React.Component {
     this.setState({selectedTicket: selectedTicket}); // selected ticket is not the ticket we have filtered out
   }
 
-  handleEditingTicketInList = (ticketToEdit) => {                       // [{ticket1}, {ticket2}, {ticket3}]    {ticketToEdit} = NEW ticket3
-    const editedMasterTicketList = this.state.masterTicketList          // [{ticket1}, {ticket2}, {ticket3}]        //previous master list
-      .filter(ticket => ticket.id !== this.state.selectedTicket.id)     // [{ticket1}, {ticket2}]                   //previous master list - ticket selected by id. uses filter method to include every ticket that does not match the selected id and makes that a new master list
-      .concat(ticketToEdit);                                            //[{ticket1}, {ticket2}, {ticketToEdit}]    //add updated ticket state to the master list
+  handleEditingTicketInList = (ticketToEdit) => {
+    const { dispatch } = this.props;
+    const { id, names, location, issue } = ticketToEdit;
+    const action = {
+      type: 'ADD_TICKET',
+      id: id,
+      names: names,
+      location: location,
+      issue: issue,
+    }
+    dispatch(action);
     this.setState({
-        masterTicketList: editedMasterTicketList,
-        editing: false,
-        selectedTicket: null
-      });
-  }
-
-  // funtion below adds new ticket entries to the master list of tickets, but it needs access to the form so it is passed to NewTicketForm in the render
-  handleAddingNewTicketToList = (newTicket) => { // Method for adding new ticket to master list, the parameter "newTicket" comes from ticketForm.js with all the new ticket properties (form data). This method will be saved as the onNewTicketCreation property on NewTicketForm.
-    const newMasterTicketList = this.state.masterTicketList.concat(newTicket); // returns brand new array and adds new ticket element saves it in new master ticket list
-    this.setState({
-      masterTicketList: newMasterTicketList, //then we are setting set current state to mastertickelist, this is just like the stuff we did in week one with the plant factory!
-      formVisibleOnPage: false });
-  }
-
-  handleDeletingTicket = (id) => {
-    const newMasterTicketList = this.state.masterTicketList.filter(ticket => ticket.id !== id);
-    this.setState({
-      masterTicketList: newMasterTicketList,
+      editing: false,
       selectedTicket: null
     });
   }
+
+  // handleEditingTicketInList = (ticketToEdit) => {                       // [{ticket1}, {ticket2}, {ticket3}]    {ticketToEdit} = NEW ticket3
+  //   const editedMasterTicketList = this.state.masterTicketList          // [{ticket1}, {ticket2}, {ticket3}]        //previous master list
+  //     .filter(ticket => ticket.id !== this.state.selectedTicket.id)     // [{ticket1}, {ticket2}]                   //previous master list - ticket selected by id. uses filter method to include every ticket that does not match the selected id and makes that a new master list
+  //     .concat(ticketToEdit);                                            //[{ticket1}, {ticket2}, {ticketToEdit}]    //add updated ticket state to the master list
+  //   this.setState({
+  //       masterTicketList: editedMasterTicketList,
+  //       editing: false,
+  //       selectedTicket: null
+  //     });
+  // }
+
+  handleAddingNewTicketToList = (newTicket) => {
+    const { dispatch } = this.props;
+    const { id, names, location, issue } = newTicket;
+    const action = {
+      type: 'ADD_TICKET',
+      id: id,
+      names: names,
+      location: location,
+      issue: issue,
+    }
+    dispatch(action);
+    this.setState({formVisibleOnPage: false});
+  }
+
+  // funtion below adds new ticket entries to the master list of tickets, but it needs access to the form so it is passed to NewTicketForm in the render
+  //handleAddingNewTicketToList = (newTicket) => { // Method for adding new ticket to master list, the parameter "newTicket" comes from ticketForm.js with all the new ticket properties (form data). This method will be saved as the onNewTicketCreation property on NewTicketForm.
+   // const newMasterTicketList = this.state.masterTicketList.concat(newTicket); // returns brand new array and adds new ticket element saves it in new master ticket list
+    //this.setState({
+      //masterTicketList: newMasterTicketList, //then we are setting set current state to mastertickelist, this is just like the stuff we did in week one with the plant factory!
+      //formVisibleOnPage: false });
+  //}
+
+  handleDeletingTicket = (id) => {
+    const { dispatch } = this.props;
+    const action = {
+      type: 'DELETE_TICKET',
+      id: id
+    }
+    dispatch(action);
+    this.setState({selectedTicket: null});
+  }
+
+  // handleDeletingTicket = (id) => {
+  //   const newMasterTicketList = this.state.masterTicketList.filter(ticket => ticket.id !== id);
+  //   this.setState({
+  //     masterTicketList: newMasterTicketList,
+  //     selectedTicket: null
+  //   });
+  // }
   
 
   render(){
@@ -97,6 +139,9 @@ class TicketControl extends React.Component {
   }
 
 }
+
+TicketControl = connect()(TicketControl);
+
 
 export default TicketControl;
 
